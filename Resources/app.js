@@ -2,10 +2,10 @@
 // This is a single context application with multiple windows in a stack
 (function() {
 	
-	function showTeaVerdict(_args) {
-		var teaVerdict = Ti.UI.createWindow({layout:'vertical'});
-		var indicator = _args.charAt(1);
+	function getVerdict(colour) {
+		var indicator = colour.charAt(1);
 		var msg;
+		// Make a crude decision on the strength of the tea based on the 2nd character of the hex color
 		switch(indicator) {
 			case 'F': msg = 'Milky'; break;
 			case 'D': msg = 'Nice'; break;
@@ -16,12 +16,22 @@
 			case '3': msg = 'No milk here'; break;
 		}
 		
+		return msg;
+	};
+	
+	function showTeaVerdict(_args) {
+		var teaVerdict = Ti.UI.createWindow({layout:'vertical'});
+		
 		teaVerdict.backgroundColor = _args;
-		teaVerdict.msg = msg;
+		teaVerdict.msg = getVerdict(_args);
 		
 		var judgement = Ti.UI.createLabel({text:teaVerdict.msg, top:'50%'});
 		var close = Ti.UI.createButton({title:'Choose again', top:'25%'});
-		close.addEventListener('click', function(e) {teaVerdict.close()});
+		close.addEventListener('click', function(e) 
+			{teaVerdict.close(); 
+			// release the resources
+			teaVerdict = null;
+			});
 		
 		teaVerdict.add(judgement);
 		teaVerdict.add(close);
